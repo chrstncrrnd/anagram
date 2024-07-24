@@ -1,7 +1,5 @@
 from math import prod
 
-
-
 char2prime = {
     "a": 2,
     "b": 3,
@@ -32,20 +30,15 @@ char2prime = {
 }
 
 
-initial = input("What sentence do you want to anagramify? ").lower().strip().replace(" ", "")
-print("Generating anagram")
-
-
 
 def wordToNumber(word):
     return prod([char2prime.get(c) for c in [*word]])
 
-initialNumber = wordToNumber(initial)
-
-
-wordFile = open("words_fixed.txt", "r")
-words = wordFile.read().splitlines()
-wordFile.close()
+def getWords():
+    wordFile = open("words_fixed.txt", "r")
+    words = wordFile.read().splitlines()
+    wordFile.close()
+    return list(filter(onlyCommonLetters, words))
 
 
 def onlyCommonLetters(candidate):
@@ -56,22 +49,24 @@ def onlyCommonLetters(candidate):
     
 
 
-
-words: list = list(filter(onlyCommonLetters, words))
-
-
-def continueRecursive(currentWordNumber: int, currentWordList: list):
+def continueRecursive(currentWordNumber: int, currentWordList: list, checked: list):
     if currentWordNumber == 1:
-        return currentWordList
-    for word in words:
+        allCombinations.append(currentWordList)
+        return
+    cWords = filter(lambda x: not x in checked, words)
+    for word in cWords:
         wNum = wordToNumber(word)
         if currentWordNumber % wNum == 0:
-            wl = continueRecursive(currentWordNumber / wNum, currentWordList)
-            if wl != None:
-                currentWordList.append(word)
-                return wl
+            continueRecursive(currentWordNumber / wNum, [*currentWordList, word], [*checked, word])
 
 
-wordsOut = continueRecursive(initialNumber, [])
+if __name__ == "__main__":
+    initial = input("What sentence do you want to anagramify? ").lower().strip().replace(" ", "")
+    print("Generating anagram")
+    initialNumber = wordToNumber(initial)
+    words: list = getWords()
 
-print(wordsOut)
+    allCombinations = []
+    continueRecursive(initialNumber, [], [])
+    print(allCombinations)
+
