@@ -1,36 +1,34 @@
 from math import prod
 
+# in order of most used in order to save memory
 char2prime = {
-    "a": 2,
-    "b": 3,
-    "c": 5,
-    "d": 7,
-    "e": 11,
-    "f": 13,
-    "g": 17,
+    "e": 2,
+    "t": 3,
+    "a": 5,
+    "o": 7,
+    "i": 11,
+    "n": 13,
+    "s": 17,
     "h": 19,
-    "i": 23,
-    "j": 29,
-    "k": 31,
-    "l": 37,
-    "m": 41,
-    "n": 43,
-    "o": 47,
-    "p": 53,
-    "q": 59,
-    "r": 61,
-    "s": 67,
-    "t": 71,
-    "u": 73,
-    "v": 79,
-    "w": 83,
+    "r": 23,
+    "d": 29,
+    "l": 31,
+    "c": 37,
+    "u": 41,
+    "m": 43,
+    "w": 47,
+    "f": 53,
+    "g": 59,
+    "y": 61,
+    "p": 67,
+    "b": 71,
+    "v": 73,
+    "k": 79,
+    "j": 83,
     "x": 89,
-    "y": 97,
+    "q": 97,
     "z": 101,
 }
-
-
-
 def wordToNumber(word):
     return prod([char2prime.get(c) for c in [*word]])
 
@@ -41,6 +39,7 @@ def getWords():
     return list(filter(onlyCommonLetters, words))
 
 
+
 def onlyCommonLetters(candidate):
     # I actually don't even know how I came up with this algorithm wtf
     candidateNumber = wordToNumber(candidate)
@@ -49,15 +48,15 @@ def onlyCommonLetters(candidate):
     
 
 
-def continueRecursive(currentWordNumber: int, currentWordList: list, checked: list):
+def continueRecursive(currentWordNumber: int, currentWordList: list):
     if currentWordNumber == 1:
-        allCombinations.append(currentWordList)
+        currentWordList.sort()
+        allCombinations.append(" ".join(currentWordList))
         return
-    cWords = filter(lambda x: not x in checked, words)
-    for word in cWords:
+    for word in words:
         wNum = wordToNumber(word)
         if currentWordNumber % wNum == 0:
-            continueRecursive(currentWordNumber / wNum, [*currentWordList, word], [*checked, word])
+            continueRecursive(currentWordNumber / wNum, [*currentWordList, word])
 
 
 if __name__ == "__main__":
@@ -67,6 +66,8 @@ if __name__ == "__main__":
     words: list = getWords()
 
     allCombinations = []
-    continueRecursive(initialNumber, [], [])
+    continueRecursive(initialNumber, [])
+    allCombinations = list(set(allCombinations))
+    
     print(allCombinations)
 
