@@ -29,10 +29,12 @@ char2prime = {
     "q": 97,
     "z": 101,
 }
-def wordToNumber(word):
+
+
+def wordToNumber(word: str) -> int:
     return prod([char2prime.get(c) for c in [*word]])
 
-def getWords():
+def getWords() -> list:
     wordFile = open("words_fixed.txt", "r")
     words = wordFile.read().splitlines()
     wordFile.close()
@@ -40,10 +42,8 @@ def getWords():
 
 
 
-def onlyCommonLetters(candidate):
-    # I actually don't even know how I came up with this algorithm wtf
+def onlyCommonLetters(candidate: str) -> bool:
     candidateNumber = wordToNumber(candidate)
-
     return initialNumber % candidateNumber == 0
     
 
@@ -58,6 +58,11 @@ def continueRecursive(currentWordNumber: int, currentWordList: list):
         if currentWordNumber % wNum == 0:
             continueRecursive(currentWordNumber / wNum, [*currentWordList, word])
 
+def outputResults(results: list):
+    for (i, res) in enumerate(results):
+        print(f"{i}: {res}")
+    
+
 
 if __name__ == "__main__":
     initial = input("What sentence do you want to anagramify? ").lower().strip().replace(" ", "")
@@ -67,7 +72,8 @@ if __name__ == "__main__":
 
     allCombinations = []
     continueRecursive(initialNumber, [])
+    # Perhaps removing duplication at the algorithm level could increase performance
     allCombinations = list(set(allCombinations))
     
-    print(allCombinations)
+    outputResults(allCombinations)
 
